@@ -15,7 +15,7 @@
     "commander": "^2.11.0",
     "npm-check": "^5.9.2",
     "p-debounce": "^1.0.0",
-    "remarkable": "git+https://github.com/codedownio/remarkable.git#8f9b78e7b968d0d2077638b3b117337043c04a71",
+    "remarkable": "git+https://github.com/codedownio/remarkable.git#65e6c0c07af10ee6d71308a8f898ae035cb038ae",
     "vscode-languageserver": "^5.3.0-next",
     "vscode-uri": "^1.0.5"
   },
