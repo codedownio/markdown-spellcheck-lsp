@@ -4,7 +4,9 @@
   "description": "Markdown spellchecker over Language Server Protocol (LSP)",
   "author": "TypeFox, CodeDown, and others",
   "license": "Apache-2.0",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/cli.js",
   "bin": {
     "markdown-spellcheck-lsp": "./dist/cli.js"
