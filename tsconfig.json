@@ -1,22 +1,21 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "dist",
+    "baseUrl": ".",
     "rootDir": "src",
-    "composite": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "target": "es6",
+    "incremental": false,
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": [
-      "es6"
-    ],
+    "lib": ["es6"],
     "alwaysStrict": true,
     "strictNullChecks": true,
     "skipLibCheck": true
   },
   "include": [
-    "src"
+    "src/**/*"
   ]
 }
