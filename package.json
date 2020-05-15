@@ -28,7 +28,8 @@
     "check": "ts-node ./src/test-spellchecker.ts",
     "build": "rimraf dist && tsc",
     "start": "node dist/cli.js",
-    "upgrade-interactive": "npm-check --update"
+    "upgrade-interactive": "npm-check --update",
+    "test": "npx jest"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.9.6",

@@ -10,9 +10,12 @@ const file = process.argv[2];
 
 console.log("File", file);
 
-const markdown = fs.readFileSync(file, "utf8");
+// const markdown = fs.readFileSync(file, "utf8");
+// console.log("Markdown", markdown);
 
-console.log("Markdown", markdown);
+let markdown = `> An blockq quote
+> with multiple lines
+> and a third`;
 
 let diagnostics = spellcheckMarkdown(markdown);
 
