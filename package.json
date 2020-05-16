@@ -22,14 +22,13 @@
   "scripts": {
     "prepare": "echo 'skip'",
     "clean": "rimraf dist",
-    "test": "mocha --exit --reporter spec \"./dist/**/*.spec.js\"",
+    "test": "npx jest",
     "lint": "tslint -c ../tslint.json --project .",
     "start-dev": "ts-node ./src/cli.ts --stdio",
     "check": "ts-node ./src/test-spellchecker.ts",
     "build": "rimraf dist && tsc",
     "start": "node dist/cli.js",
-    "upgrade-interactive": "npm-check --update",
-    "test": "npx jest"
+    "upgrade-interactive": "npm-check --update"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.9.6",

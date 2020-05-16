@@ -58,6 +58,12 @@ test('Works for a block quote', () => {
   spell(`> A singlez line block quote`, [[0, 4, 11]]);
 });
 
+test('Works for a multi-line block quote', () => {
+  spell(`> An blockq quote
+>with multiple linesz
+> and a thirdr`, [[0, 5, 11], [1, 15, 21], [2, 8, 14]]);
+});
+
 test('Works for a link', () => {
   spell(`Here is a [linkz](www.google.com)`, [[0, 11, 16]]);
 });
@@ -66,6 +72,25 @@ test('Works for a link with stuff before it', () => {
   spell(`Here **is** a [linkz](www.google.com)`, [[0, 15, 20]]);
 });
 
+test('Works for a larger example', () => {
+  spell(`
+# Here's a headingz
+
+
+> block quotez
+> asnda
+> here's one with a laterq misspel
+
+
+
+
+  `, [[1, 11, 19],
+      [4, 8, 14],
+      [5, 2, 7],
+      [6, 20, 26],
+      [6, 27, 34]
+  ])
+});
 
 test('Works for a link on a new line', () => {
   spell(`\nHere is a [linkz](www.google.com)`, [[1, 11, 16]]);

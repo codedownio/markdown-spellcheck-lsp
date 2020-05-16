@@ -13,9 +13,24 @@ console.log("File", file);
 // const markdown = fs.readFileSync(file, "utf8");
 // console.log("Markdown", markdown);
 
-let markdown = `> An blockq quote
-> with multiple lines
-> and a third`;
+// let markdown = `
+
+// > An blockq quote
+// > with multiple lines
+// > and a third`;
+
+let markdown = `
+# Here's a headingz
+
+
+> block quotez
+> asnda
+> here's one with a laterq misspel
+
+
+
+
+  `;
 
 let diagnostics = spellcheckMarkdown(markdown);
 
