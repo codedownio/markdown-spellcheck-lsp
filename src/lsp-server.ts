@@ -8,12 +8,16 @@
 import * as lsp from "vscode-languageserver";
 import debounce = require("p-debounce");
 
+const child_process = require("child_process");
+
 import { Logger, PrefixingLogger } from "./logger";
 
 import { LspClient } from "./lsp-client";
 import { uriToPath } from "./protocol-translation";
 import { LspDocuments } from "./document";
-import { spellcheckMarkdown } from "./spellcheck-markdown";
+import { initialText, spellcheckMarkdown } from "./spellcheck-markdown";
+
+import { CodeActionKind, Command, CodeAction } from "vscode-languageserver";
 
 export interface IServerOptions {
   logger: Logger
@@ -44,7 +48,13 @@ export class LspServer {
 
     this.initializeResult = {
       capabilities: {
-        textDocumentSync: lsp.TextDocumentSyncKind.Incremental
+        textDocumentSync: lsp.TextDocumentSyncKind.Incremental,
+
+        codeActionProvider: {
+          codeActionKinds: [
+            CodeActionKind.QuickFix
+          ]
+        }
       }
     };
 
@@ -142,5 +152,71 @@ export class LspServer {
 
   didSaveTextDocument(params: lsp.DidChangeTextDocumentParams): void {
     // do nothing
+  }
+
+  async codeAction(params: lsp.CodeActionParams): Promise<(lsp.Command | lsp.CodeAction)[]> {
+    const file = uriToPath(params.textDocument.uri);
+    this.logger.info("codeAction", params, file);
+    if (!file) {
+      return [];
+    }
+
+    let diagnostics = params.context.diagnostics;
+    let relevantDiagnostics = diagnostics.filter((x) => x.source === "spellchecker")
+    if (relevantDiagnostics.length === 0) return [];
+
+    let diagnostic = relevantDiagnostics[0];
+
+    let joined = diagnostic.message.slice(initialText.length);
+    let words = joined.split(", ");
+
+    let result: lsp.CodeAction[] = words.map((x) => ({
+      title: x,
+
+      edit: {
+        changes: {
+          [params.textDocument.uri]: [{
+            range: diagnostic.range,
+            newText: x
+          }]
+        }
+      }
+    }));
+
+
+    let document = this.documents.get(file);
+    if (document) {
+      let currentText = document.getText(diagnostic.range)
+      let action: CodeAction = {
+        title: "Add to dictionary",
+
+        command: {
+          title: "Add to dictionary",
+          command: "add-to-dictionary",
+          arguments: [currentText]
+        }
+      };
+      result.unshift(action);
+    }
+
+    return result;
+  }
+
+  async executeCommand(arg: lsp.ExecuteCommandParams): Promise<void> {
+    this.logger.info("executeCommand", arg);
+
+    if (arg.command === "add-to-dictionary" && arg.arguments) {
+      let wordToAdd = arg.arguments[0];
+
+      try {
+        child_process.execSync("hunspell -a", {
+          input: "*" + wordToAdd + "\n#\n"
+        }).toString().split("\n");
+
+        this.requestDiagnostics();
+      } catch (e) {
+        this.logger.error("executeCommand", e);
+      }
+    }
   }
 }

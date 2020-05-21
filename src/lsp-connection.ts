@@ -31,5 +31,8 @@ export function createLspConnection(options: IServerOptions): lsp.IConnection {
     connection.onDidCloseTextDocument(server.didCloseTextDocument.bind(server));
     connection.onDidChangeTextDocument(server.didChangeTextDocument.bind(server));
 
+    connection.onCodeAction(server.codeAction.bind(server));
+    connection.onExecuteCommand(server.executeCommand.bind(server));
+
     return connection;
 }

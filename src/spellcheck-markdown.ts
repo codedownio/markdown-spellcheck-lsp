@@ -7,6 +7,8 @@ const child_process = require("child_process");
 const wordRegex = /(\S+)/gm;
 const misspellingRegex = /& (\S+) (\d+) (\d+): (.*)/gm;
 
+export const initialText = "Misspelling. Suggestions: ";
+
 interface Word {
   text: string;
   line: number;
@@ -87,7 +89,7 @@ export function spellcheckMarkdown(markdown: string) {
 
         source: "spellchecker",
 
-        message: "Misspelling. Suggestions: " + rest
+        message: initialText + rest
       });
     }
   }
