@@ -4,6 +4,7 @@ const Remarkable = require("remarkable");
 const child_process = require("child_process");
 const wordRegex = /(\S+)/gm;
 const misspellingRegex = /& (\S+) (\d+) (\d+): (.*)/gm;
+exports.initialText = "Misspelling. Suggestions: ";
 function spellcheckMarkdown(markdown) {
     // Parse markdown to tokens
     let md = new Remarkable("commonmark");
@@ -68,7 +69,7 @@ function spellcheckMarkdown(markdown) {
                 },
                 severity: 2,
                 source: "spellchecker",
-                message: "Misspelling. Suggestions: " + rest
+                message: exports.initialText + rest
             });
         }
     }

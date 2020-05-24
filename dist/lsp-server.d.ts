@@ -21,5 +21,7 @@ export declare class LspServer {
     protected closeDocument(file: string): void;
     didChangeTextDocument(params: lsp.DidChangeTextDocumentParams): void;
     didSaveTextDocument(params: lsp.DidChangeTextDocumentParams): void;
+    codeAction(params: lsp.CodeActionParams): Promise<(lsp.Command | lsp.CodeAction)[]>;
+    executeCommand(arg: lsp.ExecuteCommandParams): Promise<void>;
 }
 //# sourceMappingURL=lsp-server.d.ts.map

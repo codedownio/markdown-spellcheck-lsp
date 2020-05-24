@@ -17,10 +17,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const lsp = require("vscode-languageserver");
 const debounce = require("p-debounce");
+const child_process = require("child_process");
 const logger_1 = require("./logger");
 const protocol_translation_1 = require("./protocol-translation");
 const document_1 = require("./document");
 const spellcheck_markdown_1 = require("./spellcheck-markdown");
+const vscode_languageserver_1 = require("vscode-languageserver");
 class LspServer {
     constructor(options) {
         this.options = options;
@@ -39,7 +41,12 @@ class LspServer {
             this.initializeParams = params;
             this.initializeResult = {
                 capabilities: {
-                    textDocumentSync: lsp.TextDocumentSyncKind.Incremental
+                    textDocumentSync: lsp.TextDocumentSyncKind.Incremental,
+                    codeActionProvider: {
+                        codeActionKinds: [
+                            vscode_languageserver_1.CodeActionKind.QuickFix
+                        ]
+                    }
                 }
             };
             this.logger.log("onInitialize result", this.initializeResult);
@@ -123,6 +130,64 @@ class LspServer {
     }
     didSaveTextDocument(params) {
         // do nothing
+    }
+    codeAction(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const file = protocol_translation_1.uriToPath(params.textDocument.uri);
+            this.logger.info("codeAction", params, file);
+            if (!file) {
+                return [];
+            }
+            let diagnostics = params.context.diagnostics;
+            let relevantDiagnostics = diagnostics.filter((x) => x.source === "spellchecker");
+            if (relevantDiagnostics.length === 0)
+                return [];
+            let diagnostic = relevantDiagnostics[0];
+            let joined = diagnostic.message.slice(spellcheck_markdown_1.initialText.length);
+            let words = joined.split(", ");
+            let result = words.map((x) => ({
+                title: x,
+                edit: {
+                    changes: {
+                        [params.textDocument.uri]: [{
+                                range: diagnostic.range,
+                                newText: x
+                            }]
+                    }
+                }
+            }));
+            let document = this.documents.get(file);
+            if (document) {
+                let currentText = document.getText(diagnostic.range);
+                let action = {
+                    title: "Add to dictionary",
+                    command: {
+                        title: "Add to dictionary",
+                        command: "add-to-dictionary",
+                        arguments: [currentText]
+                    }
+                };
+                result.unshift(action);
+            }
+            return result;
+        });
+    }
+    executeCommand(arg) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.info("executeCommand", arg);
+            if (arg.command === "add-to-dictionary" && arg.arguments) {
+                let wordToAdd = arg.arguments[0];
+                try {
+                    child_process.execSync("hunspell -a", {
+                        input: "*" + wordToAdd + "\n#\n"
+                    }).toString().split("\n");
+                    this.requestDiagnostics();
+                }
+                catch (e) {
+                    this.logger.error("executeCommand", e);
+                }
+            }
+        });
     }
 }
 exports.LspServer = LspServer;

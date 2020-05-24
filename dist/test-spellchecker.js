@@ -6,8 +6,24 @@ const spellcheck_markdown_1 = require("./spellcheck-markdown");
 const fs = require("fs");
 const file = process.argv[2];
 console.log("File", file);
-const markdown = fs.readFileSync(file, "utf8");
-console.log("Markdown", markdown);
+// const markdown = fs.readFileSync(file, "utf8");
+// console.log("Markdown", markdown);
+// let markdown = `
+// > An blockq quote
+// > with multiple lines
+// > and a third`;
+let markdown = `
+# Here's a headingz
+
+
+> block quotez
+> asnda
+> here's one with a laterq misspel
+
+
+
+
+  `;
 let diagnostics = spellcheck_markdown_1.spellcheckMarkdown(markdown);
 console.log("Diagnostics", JSON.stringify(diagnostics));
 //# sourceMappingURL=test-spellchecker.js.map
