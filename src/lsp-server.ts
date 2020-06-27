@@ -54,6 +54,10 @@ export class LspServer {
           codeActionKinds: [
             CodeActionKind.QuickFix
           ]
+        },
+
+        executeCommandProvider: {
+          commands: ["add-to-dictionary"]
         }
       }
     };

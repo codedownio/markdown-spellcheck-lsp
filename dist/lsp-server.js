@@ -46,6 +46,9 @@ class LspServer {
                         codeActionKinds: [
                             vscode_languageserver_1.CodeActionKind.QuickFix
                         ]
+                    },
+                    executeCommandProvider: {
+                        commands: ["add-to-dictionary"]
                     }
                 }
             };
