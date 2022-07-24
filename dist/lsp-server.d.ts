@@ -7,7 +7,6 @@ export interface IServerOptions {
 }
 export declare class LspServer {
     private options;
-    private initializeParams;
     private initializeResult;
     private logger;
     private readonly documents;

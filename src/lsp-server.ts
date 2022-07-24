@@ -5,8 +5,8 @@
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import * as lsp from "vscode-languageserver";
 import debounce = require("p-debounce");
+import * as lsp from "vscode-languageserver";
 
 const child_process = require("child_process");
 
@@ -25,7 +25,6 @@ export interface IServerOptions {
 }
 
 export class LspServer {
-  private initializeParams: lsp.InitializeParams;
   private initializeResult: lsp.InitializeResult;
   private logger: Logger;
 
@@ -42,10 +41,6 @@ export class LspServer {
   }
 
   async initialize(params: lsp.InitializeParams): Promise<lsp.InitializeResult> {
-    this.logger.log("initialize", params);
-
-    this.initializeParams = params;
-
     this.initializeResult = {
       capabilities: {
         textDocumentSync: lsp.TextDocumentSyncKind.Incremental,
@@ -62,8 +57,6 @@ export class LspServer {
       }
     };
 
-    this.logger.log("onInitialize result", this.initializeResult);
-
     return this.initializeResult;
   }
 
@@ -73,7 +66,6 @@ export class LspServer {
     const { files } = this.documents;
 
     for (let file of files) {
-      this.logger.log("diagnostics", "TODO: do diagnostics for file " + file);
       let document = this.documents.get(file);
       if (!document) continue;
       let diagnostics = spellcheckMarkdown(document.getText());
@@ -87,8 +79,6 @@ export class LspServer {
   didOpenTextDocument(params: lsp.DidOpenTextDocumentParams): void {
     const file = uriToPath(params.textDocument.uri);
 
-    this.logger.log("onDidOpenTextDocument", params, file);
-
     if (!file) {
       return;
     }
@@ -96,7 +86,7 @@ export class LspServer {
     if (this.documents.open(file, params.textDocument)) {
       this.requestDiagnostics();
     } else {
-      this.logger.log(`Cannot open already opened doc "${params.textDocument.uri}".`);
+      this.logger.warn(`Cannot open already opened doc "${params.textDocument.uri}".`);
       this.didChangeTextDocument({
         textDocument: params.textDocument,
         contentChanges: [{
@@ -108,7 +98,6 @@ export class LspServer {
 
   didCloseTextDocument(params: lsp.DidCloseTextDocumentParams): void {
     const file = uriToPath(params.textDocument.uri);
-    this.logger.log("onDidCloseTextDocument", params, file);
     if (!file) {
       return;
     }
@@ -132,7 +121,6 @@ export class LspServer {
   didChangeTextDocument(params: lsp.DidChangeTextDocumentParams): void {
     const { textDocument } = params;
     const file = uriToPath(textDocument.uri);
-    this.logger.error("onDidChangeTextDocument", params, file);
     if (!file) {
       return;
     }
@@ -160,7 +148,6 @@ export class LspServer {
 
   async codeAction(params: lsp.CodeActionParams): Promise<(lsp.Command | lsp.CodeAction)[]> {
     const file = uriToPath(params.textDocument.uri);
-    this.logger.info("codeAction", params, file);
     if (!file) {
       return [];
     }
@@ -207,8 +194,6 @@ export class LspServer {
   }
 
   async executeCommand(arg: lsp.ExecuteCommandParams): Promise<void> {
-    this.logger.info("executeCommand", arg);
-
     if (arg.command === "add-to-dictionary" && arg.arguments) {
       let wordToAdd = arg.arguments[0];
 

@@ -15,8 +15,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const lsp = require("vscode-languageserver");
 const debounce = require("p-debounce");
+const lsp = require("vscode-languageserver");
 const child_process = require("child_process");
 const logger_1 = require("./logger");
 const protocol_translation_1 = require("./protocol-translation");
@@ -37,8 +37,6 @@ class LspServer {
     }
     initialize(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.logger.log("initialize", params);
-            this.initializeParams = params;
             this.initializeResult = {
                 capabilities: {
                     textDocumentSync: lsp.TextDocumentSyncKind.Incremental,
@@ -52,7 +50,6 @@ class LspServer {
                     }
                 }
             };
-            this.logger.log("onInitialize result", this.initializeResult);
             return this.initializeResult;
         });
     }
@@ -60,7 +57,6 @@ class LspServer {
         return __awaiter(this, void 0, void 0, function* () {
             const { files } = this.documents;
             for (let file of files) {
-                this.logger.log("diagnostics", "TODO: do diagnostics for file " + file);
                 let document = this.documents.get(file);
                 if (!document)
                     continue;
@@ -74,7 +70,6 @@ class LspServer {
     }
     didOpenTextDocument(params) {
         const file = protocol_translation_1.uriToPath(params.textDocument.uri);
-        this.logger.log("onDidOpenTextDocument", params, file);
         if (!file) {
             return;
         }
@@ -82,7 +77,7 @@ class LspServer {
             this.requestDiagnostics();
         }
         else {
-            this.logger.log(`Cannot open already opened doc "${params.textDocument.uri}".`);
+            this.logger.warn(`Cannot open already opened doc "${params.textDocument.uri}".`);
             this.didChangeTextDocument({
                 textDocument: params.textDocument,
                 contentChanges: [{
@@ -93,7 +88,6 @@ class LspServer {
     }
     didCloseTextDocument(params) {
         const file = protocol_translation_1.uriToPath(params.textDocument.uri);
-        this.logger.log("onDidCloseTextDocument", params, file);
         if (!file) {
             return;
         }
@@ -114,7 +108,6 @@ class LspServer {
     didChangeTextDocument(params) {
         const { textDocument } = params;
         const file = protocol_translation_1.uriToPath(textDocument.uri);
-        this.logger.error("onDidChangeTextDocument", params, file);
         if (!file) {
             return;
         }
@@ -137,7 +130,6 @@ class LspServer {
     codeAction(params) {
         return __awaiter(this, void 0, void 0, function* () {
             const file = protocol_translation_1.uriToPath(params.textDocument.uri);
-            this.logger.info("codeAction", params, file);
             if (!file) {
                 return [];
             }
@@ -177,7 +169,6 @@ class LspServer {
     }
     executeCommand(arg) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.logger.info("executeCommand", arg);
             if (arg.command === "add-to-dictionary" && arg.arguments) {
                 let wordToAdd = arg.arguments[0];
                 try {
