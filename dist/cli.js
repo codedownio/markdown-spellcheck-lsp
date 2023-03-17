@@ -7,11 +7,13 @@
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+const lsp = require("vscode-languageserver");
 const commander_1 = require("commander");
 const lsp_connection_1 = require("./lsp-connection");
-const lsp = require("vscode-languageserver");
 const program = new commander_1.Command("markdown-spellchecker")
     .version(require("../package.json").version)
+    .option("--affix-file", "Path to hunspell affix file (like en_US.aff)")
+    .option("--dic-file", "Path to hunspell dictionary file (like en_US.dic)")
     .option("--stdio", "use stdio")
     .option("--node-ipc", "use node-ipc")
     .option("--log-level <logLevel>", "A number indicating the log level (4 = log, 3 = info, 2 = warn, 1 = error). Defaults to `2`.")
@@ -33,6 +35,8 @@ if (program.logLevel) {
     }
 }
 (0, lsp_connection_1.createLspConnection)({
-    showMessageLevel: program.logLevel
+    showMessageLevel: program.logLevel,
+    affixFile: program.affixFile,
+    dicFile: program.dicFile,
 }).listen();
 //# sourceMappingURL=cli.js.map

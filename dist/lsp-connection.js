@@ -17,7 +17,9 @@ function createLspConnection(options) {
     const logger = new logger_1.LspClientLogger(lspClient, options.showMessageLevel);
     const server = new lsp_server_1.LspServer({
         logger,
-        lspClient
+        lspClient,
+        affixFile: options.affixFile,
+        dicFile: options.dicFile,
     });
     connection.onInitialize(server.initialize.bind(server));
     connection.onDidOpenTextDocument(server.didOpenTextDocument.bind(server));

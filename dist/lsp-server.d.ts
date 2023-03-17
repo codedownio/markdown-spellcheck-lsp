@@ -4,6 +4,8 @@ import { Command, CodeAction, CodeActionParams, DidOpenTextDocumentParams, DidCl
 export interface IServerOptions {
     logger: Logger;
     lspClient: LspClient;
+    affixFile: string;
+    dicFile: string;
 }
 export declare class LspServer {
     private options;

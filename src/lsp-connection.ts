@@ -12,7 +12,9 @@ import { LspServer } from './lsp-server';
 import { LspClient } from './lsp-client';
 
 export interface IServerOptions {
-    showMessageLevel: lsp.MessageType
+    showMessageLevel: lsp.MessageType;
+    affixFile: string;
+    dicFile: string;
 }
 
 export function createLspConnection(options: IServerOptions): lsp.IConnection {
@@ -21,7 +23,9 @@ export function createLspConnection(options: IServerOptions): lsp.IConnection {
     const logger = new LspClientLogger(lspClient, options.showMessageLevel);
     const server: LspServer = new LspServer({
         logger,
-        lspClient
+        lspClient,
+        affixFile: options.affixFile,
+        dicFile: options.dicFile,
     });
 
     connection.onInitialize(server.initialize.bind(server));

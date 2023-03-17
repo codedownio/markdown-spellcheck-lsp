@@ -23,6 +23,8 @@ import { CodeActionKind, Command, CodeAction, CodeActionParams, DidOpenTextDocum
 export interface IServerOptions {
   logger: Logger
   lspClient: LspClient;
+  affixFile: string;
+  dicFile: string;
 }
 
 export class LspServer {
@@ -35,8 +37,8 @@ export class LspServer {
   constructor(private options: IServerOptions) {
     this.logger = new PrefixingLogger(options.logger, "[lspserver]")
 
-    const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
-    const dictionary = fs.readFileSync("/usr/share/hunspell/en_US.dic");
+    const affix = fs.readFileSync(options.affixFile);
+    const dictionary = fs.readFileSync(options.dicFile);
     this.nodehun = new Nodehun(affix, dictionary);
   }
 

@@ -30,8 +30,8 @@ class LspServer {
         this.documents = new document_1.LspDocuments();
         this.requestDiagnostics = debounce(() => this.doRequestDiagnostics(), 200);
         this.logger = new logger_1.PrefixingLogger(options.logger, "[lspserver]");
-        const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
-        const dictionary = fs.readFileSync("/usr/share/hunspell/en_US.dic");
+        const affix = fs.readFileSync(options.affixFile);
+        const dictionary = fs.readFileSync(options.dicFile);
         this.nodehun = new nodehun_1.Nodehun(affix, dictionary);
     }
     closeAll() {

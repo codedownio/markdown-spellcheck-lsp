@@ -108,8 +108,11 @@ test(`Doesn't flag contractions 2`, async () => {
 
 import {Nodehun} from "nodehun";
 const fs = require("fs");
+
+// TODO: be able to pass these in when running tests
 const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
 const dictionary = fs.readFileSync("/usr/share/hunspell/en_US.dic");
+
 const nodehun = new Nodehun(affix, dictionary);
 
 /**
