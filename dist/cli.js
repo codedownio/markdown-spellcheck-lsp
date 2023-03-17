@@ -7,36 +7,37 @@
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const lsp = require("vscode-languageserver");
 const commander_1 = require("commander");
+const vscode_languageserver_1 = require("vscode-languageserver");
 const lsp_connection_1 = require("./lsp-connection");
-const program = new commander_1.Command("markdown-spellchecker")
+commander_1.program
     .version(require("../package.json").version)
-    .option("--affix-file", "Path to hunspell affix file (like en_US.aff)")
-    .option("--dic-file", "Path to hunspell dictionary file (like en_US.dic)")
+    .requiredOption("--affix-file <path>", "Path to hunspell affix file (like en_US.aff)")
+    .requiredOption("--dic-file <path>", "Path to hunspell dictionary file (like en_US.dic)")
     .option("--stdio", "use stdio")
     .option("--node-ipc", "use node-ipc")
     .option("--log-level <logLevel>", "A number indicating the log level (4 = log, 3 = info, 2 = warn, 1 = error). Defaults to `2`.")
-    .option("--socket <port>", "use socket. example: --socket=5000")
-    .parse(process.argv);
-if (!(program.stdio || program.socket || program.nodeIpc)) {
+    .option("--socket <port>", "use socket. example: --socket=5000");
+commander_1.program.parse();
+const options = commander_1.program.opts();
+if (!(options.stdio || options.socket || options.nodeIpc)) {
     console.error("Connection type required (stdio, node-ipc, socket). Refer to --help for more details.");
     process.exit(1);
 }
-if (!program.logLevel) {
-    program.logLevel = 2;
+if (!options.logLevel) {
+    options.logLevel = 2;
 }
-let logLevel = lsp.MessageType.Warning;
-if (program.logLevel) {
-    logLevel = parseInt(program.logLevel, 10);
+let logLevel = vscode_languageserver_1.MessageType.Warning;
+if (options.logLevel) {
+    logLevel = parseInt(options.logLevel, 10);
     if (logLevel && (logLevel < 1 || logLevel > 4)) {
         console.error("Invalid `--log-level " + logLevel + "`. Falling back to `info` level.");
-        logLevel = lsp.MessageType.Warning;
+        logLevel = vscode_languageserver_1.MessageType.Warning;
     }
 }
 (0, lsp_connection_1.createLspConnection)({
-    showMessageLevel: program.logLevel,
-    affixFile: program.affixFile,
-    dicFile: program.dicFile,
+    showMessageLevel: options.logLevel,
+    affixFile: options.affixFile,
+    dicFile: options.dicFile,
 }).listen();
 //# sourceMappingURL=cli.js.map

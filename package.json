@@ -12,7 +12,7 @@
     "markdown-spellcheck-lsp": "./dist/cli.js"
   },
   "dependencies": {
-    "commander": "^2.11.0",
+    "commander": "^10.0.0",
     "nodehun": "^3.0.2",
     "npm-check": "^6.0.1",
     "p-debounce": "^1.0.0",
