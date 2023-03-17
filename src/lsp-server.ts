@@ -6,9 +6,9 @@
  */
 
 import debounce = require("p-debounce");
-import * as lsp from "vscode-languageserver";
+import {Nodehun} from "nodehun";
 
-const child_process = require("child_process");
+const fs = require("fs");
 
 import { Logger, PrefixingLogger } from "./logger";
 
@@ -17,7 +17,8 @@ import { uriToPath } from "./protocol-translation";
 import { LspDocuments } from "./document";
 import { initialText, spellcheckMarkdown } from "./spellcheck-markdown";
 
-import { CodeActionKind, Command, CodeAction } from "vscode-languageserver";
+import { CodeActionKind, Command, CodeAction, CodeActionParams, DidOpenTextDocumentParams, DidCloseTextDocumentParams, DidChangeTextDocumentParams, ExecuteCommandParams, InitializeParams, InitializeResult, TextDocumentSyncKind } from "vscode-languageserver";
+
 
 export interface IServerOptions {
   logger: Logger
@@ -25,13 +26,18 @@ export interface IServerOptions {
 }
 
 export class LspServer {
-  private initializeResult: lsp.InitializeResult;
+  private initializeResult: InitializeResult;
   private logger: Logger;
+  private nodehun: Nodehun;
 
   private readonly documents = new LspDocuments();
 
   constructor(private options: IServerOptions) {
     this.logger = new PrefixingLogger(options.logger, "[lspserver]")
+
+    const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
+    const dictionary = fs.readFileSync("/usr/share/hunspell/en_US.dic");
+    this.nodehun = new Nodehun(affix, dictionary);
   }
 
   closeAll(): void {
@@ -40,10 +46,10 @@ export class LspServer {
     }
   }
 
-  async initialize(params: lsp.InitializeParams): Promise<lsp.InitializeResult> {
+  async initialize(params: InitializeParams): Promise<InitializeResult> {
     this.initializeResult = {
       capabilities: {
-        textDocumentSync: lsp.TextDocumentSyncKind.Incremental,
+        textDocumentSync: TextDocumentSyncKind.Incremental,
 
         codeActionProvider: {
           codeActionKinds: [
@@ -68,7 +74,7 @@ export class LspServer {
     for (let file of files) {
       let document = this.documents.get(file);
       if (!document) continue;
-      let diagnostics = spellcheckMarkdown(document.getText());
+      const diagnostics = await spellcheckMarkdown(this.nodehun, document.getText());
       this.options.lspClient.publishDiagnostics({
         uri: document.uri,
         diagnostics,
@@ -76,7 +82,7 @@ export class LspServer {
     }
   }
 
-  didOpenTextDocument(params: lsp.DidOpenTextDocumentParams): void {
+  didOpenTextDocument(params: DidOpenTextDocumentParams): void {
     const file = uriToPath(params.textDocument.uri);
 
     if (!file) {
@@ -96,7 +102,7 @@ export class LspServer {
     }
   }
 
-  didCloseTextDocument(params: lsp.DidCloseTextDocumentParams): void {
+  didCloseTextDocument(params: DidCloseTextDocumentParams): void {
     const file = uriToPath(params.textDocument.uri);
     if (!file) {
       return;
@@ -118,7 +124,7 @@ export class LspServer {
     });
   }
 
-  didChangeTextDocument(params: lsp.DidChangeTextDocumentParams): void {
+  didChangeTextDocument(params: DidChangeTextDocumentParams): void {
     const { textDocument } = params;
     const file = uriToPath(textDocument.uri);
     if (!file) {
@@ -142,11 +148,11 @@ export class LspServer {
     this.requestDiagnostics();
   }
 
-  didSaveTextDocument(params: lsp.DidChangeTextDocumentParams): void {
+  didSaveTextDocument(params: DidChangeTextDocumentParams): void {
     // do nothing
   }
 
-  async codeAction(params: lsp.CodeActionParams): Promise<(lsp.Command | lsp.CodeAction)[]> {
+  async codeAction(params: CodeActionParams): Promise<(Command | CodeAction)[]> {
     const file = uriToPath(params.textDocument.uri);
     if (!file) {
       return [];
@@ -161,7 +167,7 @@ export class LspServer {
     let joined = diagnostic.message.slice(initialText.length);
     let words = joined.split(", ");
 
-    let result: lsp.CodeAction[] = words.map((x) => ({
+    let result: CodeAction[] = words.map((x) => ({
       title: x,
 
       edit: {
@@ -193,14 +199,12 @@ export class LspServer {
     return result;
   }
 
-  async executeCommand(arg: lsp.ExecuteCommandParams): Promise<void> {
+  async executeCommand(arg: ExecuteCommandParams): Promise<void> {
     if (arg.command === "add-to-dictionary" && arg.arguments) {
       let wordToAdd = arg.arguments[0];
 
       try {
-        child_process.execSync("hunspell -a", {
-          input: "*" + wordToAdd + "\n#\n"
-        }).toString().split("\n");
+        this.nodehun.add(wordToAdd);
 
         this.requestDiagnostics();
       } catch (e) {

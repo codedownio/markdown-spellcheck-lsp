@@ -6,6 +6,7 @@
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.pathToUri = exports.uriToPath = void 0;
 const vscode_uri_1 = require("vscode-uri");
 function uriToPath(stringUri) {
     const uri = vscode_uri_1.default.parse(stringUri);

@@ -4,7 +4,12 @@ import {spellcheckMarkdown} from './spellcheck-markdown';
 
 /*** This is a test main function for running the spellchecker on a file via "npm run check" ***/
 
+import {Nodehun} from "nodehun";
 const fs = require("fs");
+
+const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
+const dictionary = fs.readFileSync("/usr/share/hunspell/en_US.dic");
+const nodehun = new Nodehun(affix, dictionary);
 
 const file = process.argv[2];
 
@@ -20,18 +25,10 @@ console.log("File", file);
 // > and a third`;
 
 let markdown = `
-# Here's a headingz
-
-
-> block quotez
-> asnda
-> here's one with a laterq misspel
-
-
-
+# I've done a thing
 
   `;
 
-let diagnostics = spellcheckMarkdown(markdown);
-
-console.log("Diagnostics", JSON.stringify(diagnostics));
+spellcheckMarkdown(nodehun, markdown).then((diagnostics) => {
+  console.log("Diagnostics", JSON.stringify(diagnostics));
+});

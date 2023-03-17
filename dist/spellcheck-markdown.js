@@ -1,79 +1,69 @@
 "use strict";
+// import { Nodehun } from "nodehun";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.spellcheckMarkdown = exports.initialText = void 0;
 const Remarkable = require("remarkable");
-const child_process = require("child_process");
 const wordRegex = /(\S+)/gm;
-const misspellingRegex = /& (\S+) (\d+) (\d+): (.*)/gm;
 exports.initialText = "Misspelling. Suggestions: ";
-function spellcheckMarkdown(markdown) {
-    // Parse markdown to tokens
-    let md = new Remarkable("commonmark");
-    md.inline.ruler.enable(["footnote_inline", "del", "math"]);
-    md.inline.validateLink = () => true;
-    md.options.noTrimInline = true;
-    let env = {};
-    let tokens = md.parse(markdown, env);
-    // console.log("Got tokens", JSON.stringify(tokens));
-    // Get words from tokens
-    let words = [];
-    tokens.map((tok) => walkTokenTree(tok, (token) => {
-        if (token.type === "text") {
-            let content = token.content;
-            let match;
-            while ((match = wordRegex.exec(content)) !== null) {
-                words.push({
-                    text: match[0],
-                    line: token.line,
-                    start: match.index + (token.start || 0),
-                    end: wordRegex.lastIndex + (token.start || 0)
-                });
+function spellcheckMarkdown(nodehun, markdown) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // Parse markdown to tokens
+        let md = new Remarkable("commonmark");
+        md.inline.ruler.enable(["footnote_inline", "del", "math"]);
+        md.inline.validateLink = () => true;
+        md.options.noTrimInline = true;
+        let env = {};
+        let tokens = md.parse(markdown, env);
+        // console.log("Got tokens", JSON.stringify(tokens));
+        // Get words from tokens
+        let words = [];
+        tokens.map((tok) => walkTokenTree(tok, (token) => {
+            if (token.type === "text") {
+                let content = token.content;
+                let match;
+                while ((match = wordRegex.exec(content)) !== null) {
+                    words.push({
+                        text: match[0],
+                        line: token.line,
+                        start: match.index + (token.start || 0),
+                        end: wordRegex.lastIndex + (token.start || 0)
+                    });
+                }
             }
-        }
-    }));
-    // console.log("Got words", words.length, words);
-    // Run hunspell and parse the output to get diagnostics
-    let diagnostics = [];
-    let lines = child_process.execSync("hunspell -a", {
-        input: words.map((x) => x.text).join("\n")
-    }).toString().split("\n");
-    let curLine = 0;
-    for (let i = 0; i < lines.length; i += 1) {
-        let line = lines[i];
-        if (line === "") {
-            curLine += 1;
-        }
-        else if (line[0] === "*") {
-            // Correct word, ignore
-        }
-        else if (line[0] === "&") {
-            let misspellingInfo = misspellingRegex.exec(line);
-            misspellingRegex.lastIndex = 0;
-            if (!misspellingInfo)
+        }));
+        // console.log("Got words", words.length, words);
+        let diagnostics = [];
+        for (let word of words) {
+            const suggestions = yield nodehun.suggest(word.text);
+            if (!suggestions)
                 continue;
-            let word = misspellingInfo[1];
-            let unknown = Number.parseInt(misspellingInfo[2] || "0");
-            let startCh = Number.parseInt(misspellingInfo[3] || "0");
-            let rest = misspellingInfo[4] || "";
-            let suggestions = rest.split(", ");
-            let originalWord = words[curLine];
             diagnostics.push({
                 range: {
                     start: {
-                        line: originalWord.line || 0,
-                        character: originalWord.start + startCh
+                        line: word.line || 0,
+                        character: word.start
                     },
                     end: {
-                        line: originalWord.line,
-                        character: originalWord.end
+                        line: word.line,
+                        character: word.end
                     }
                 },
                 severity: 2,
                 source: "spellchecker",
-                message: exports.initialText + rest
+                message: exports.initialText + suggestions.join(", ")
             });
         }
-    }
-    return diagnostics;
+        return diagnostics;
+    });
 }
 exports.spellcheckMarkdown = spellcheckMarkdown;
 function walkTokenTree(token, fn) {

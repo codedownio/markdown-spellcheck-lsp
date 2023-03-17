@@ -3,7 +3,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const spellcheck_markdown_1 = require("./spellcheck-markdown");
 /*** This is a test main function for running the spellchecker on a file via "npm run check" ***/
+const nodehun_1 = require("nodehun");
 const fs = require("fs");
+const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
+const dictionary = fs.readFileSync("/usr/share/hunspell/en_US.dic");
+const nodehun = new nodehun_1.Nodehun(affix, dictionary);
 const file = process.argv[2];
 console.log("File", file);
 // const markdown = fs.readFileSync(file, "utf8");
@@ -13,17 +17,10 @@ console.log("File", file);
 // > with multiple lines
 // > and a third`;
 let markdown = `
-# Here's a headingz
-
-
-> block quotez
-> asnda
-> here's one with a laterq misspel
-
-
-
+# I've done a thing
 
   `;
-let diagnostics = spellcheck_markdown_1.spellcheckMarkdown(markdown);
-console.log("Diagnostics", JSON.stringify(diagnostics));
+(0, spellcheck_markdown_1.spellcheckMarkdown)(nodehun, markdown).then((diagnostics) => {
+    console.log("Diagnostics", JSON.stringify(diagnostics));
+});
 //# sourceMappingURL=test-spellchecker.js.map

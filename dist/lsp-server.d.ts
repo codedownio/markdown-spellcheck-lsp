@@ -1,6 +1,6 @@
-import * as lsp from "vscode-languageserver";
 import { Logger } from "./logger";
 import { LspClient } from "./lsp-client";
+import { Command, CodeAction, CodeActionParams, DidOpenTextDocumentParams, DidCloseTextDocumentParams, DidChangeTextDocumentParams, ExecuteCommandParams, InitializeParams, InitializeResult } from "vscode-languageserver";
 export interface IServerOptions {
     logger: Logger;
     lspClient: LspClient;
@@ -9,18 +9,19 @@ export declare class LspServer {
     private options;
     private initializeResult;
     private logger;
+    private nodehun;
     private readonly documents;
     constructor(options: IServerOptions);
     closeAll(): void;
-    initialize(params: lsp.InitializeParams): Promise<lsp.InitializeResult>;
+    initialize(params: InitializeParams): Promise<InitializeResult>;
     readonly requestDiagnostics: any;
     protected doRequestDiagnostics(): Promise<void>;
-    didOpenTextDocument(params: lsp.DidOpenTextDocumentParams): void;
-    didCloseTextDocument(params: lsp.DidCloseTextDocumentParams): void;
+    didOpenTextDocument(params: DidOpenTextDocumentParams): void;
+    didCloseTextDocument(params: DidCloseTextDocumentParams): void;
     protected closeDocument(file: string): void;
-    didChangeTextDocument(params: lsp.DidChangeTextDocumentParams): void;
-    didSaveTextDocument(params: lsp.DidChangeTextDocumentParams): void;
-    codeAction(params: lsp.CodeActionParams): Promise<(lsp.Command | lsp.CodeAction)[]>;
-    executeCommand(arg: lsp.ExecuteCommandParams): Promise<void>;
+    didChangeTextDocument(params: DidChangeTextDocumentParams): void;
+    didSaveTextDocument(params: DidChangeTextDocumentParams): void;
+    codeAction(params: CodeActionParams): Promise<(Command | CodeAction)[]>;
+    executeCommand(arg: ExecuteCommandParams): Promise<void>;
 }
 //# sourceMappingURL=lsp-server.d.ts.map

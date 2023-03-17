@@ -15,9 +15,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LspServer = void 0;
 const debounce = require("p-debounce");
-const lsp = require("vscode-languageserver");
-const child_process = require("child_process");
+const nodehun_1 = require("nodehun");
+const fs = require("fs");
 const logger_1 = require("./logger");
 const protocol_translation_1 = require("./protocol-translation");
 const document_1 = require("./document");
@@ -29,6 +30,9 @@ class LspServer {
         this.documents = new document_1.LspDocuments();
         this.requestDiagnostics = debounce(() => this.doRequestDiagnostics(), 200);
         this.logger = new logger_1.PrefixingLogger(options.logger, "[lspserver]");
+        const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
+        const dictionary = fs.readFileSync("/usr/share/hunspell/en_US.dic");
+        this.nodehun = new nodehun_1.Nodehun(affix, dictionary);
     }
     closeAll() {
         for (const file of [...this.documents.files]) {
@@ -39,7 +43,7 @@ class LspServer {
         return __awaiter(this, void 0, void 0, function* () {
             this.initializeResult = {
                 capabilities: {
-                    textDocumentSync: lsp.TextDocumentSyncKind.Incremental,
+                    textDocumentSync: vscode_languageserver_1.TextDocumentSyncKind.Incremental,
                     codeActionProvider: {
                         codeActionKinds: [
                             vscode_languageserver_1.CodeActionKind.QuickFix
@@ -60,7 +64,7 @@ class LspServer {
                 let document = this.documents.get(file);
                 if (!document)
                     continue;
-                let diagnostics = spellcheck_markdown_1.spellcheckMarkdown(document.getText());
+                const diagnostics = yield (0, spellcheck_markdown_1.spellcheckMarkdown)(this.nodehun, document.getText());
                 this.options.lspClient.publishDiagnostics({
                     uri: document.uri,
                     diagnostics,
@@ -69,7 +73,7 @@ class LspServer {
         });
     }
     didOpenTextDocument(params) {
-        const file = protocol_translation_1.uriToPath(params.textDocument.uri);
+        const file = (0, protocol_translation_1.uriToPath)(params.textDocument.uri);
         if (!file) {
             return;
         }
@@ -87,7 +91,7 @@ class LspServer {
         }
     }
     didCloseTextDocument(params) {
-        const file = protocol_translation_1.uriToPath(params.textDocument.uri);
+        const file = (0, protocol_translation_1.uriToPath)(params.textDocument.uri);
         if (!file) {
             return;
         }
@@ -107,7 +111,7 @@ class LspServer {
     }
     didChangeTextDocument(params) {
         const { textDocument } = params;
-        const file = protocol_translation_1.uriToPath(textDocument.uri);
+        const file = (0, protocol_translation_1.uriToPath)(textDocument.uri);
         if (!file) {
             return;
         }
@@ -129,7 +133,7 @@ class LspServer {
     }
     codeAction(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const file = protocol_translation_1.uriToPath(params.textDocument.uri);
+            const file = (0, protocol_translation_1.uriToPath)(params.textDocument.uri);
             if (!file) {
                 return [];
             }
@@ -172,9 +176,7 @@ class LspServer {
             if (arg.command === "add-to-dictionary" && arg.arguments) {
                 let wordToAdd = arg.arguments[0];
                 try {
-                    child_process.execSync("hunspell -a", {
-                        input: "*" + wordToAdd + "\n#\n"
-                    }).toString().split("\n");
+                    this.nodehun.add(wordToAdd);
                     this.requestDiagnostics();
                 }
                 catch (e) {

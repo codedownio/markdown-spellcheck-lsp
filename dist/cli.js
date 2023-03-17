@@ -32,7 +32,7 @@ if (program.logLevel) {
         logLevel = lsp.MessageType.Warning;
     }
 }
-lsp_connection_1.createLspConnection({
+(0, lsp_connection_1.createLspConnection)({
     showMessageLevel: program.logLevel
 }).listen();
 //# sourceMappingURL=cli.js.map

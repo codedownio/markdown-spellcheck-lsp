@@ -6,6 +6,7 @@
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createLspConnection = void 0;
 const lsp = require("vscode-languageserver");
 const logger_1 = require("./logger");
 const lsp_server_1 = require("./lsp-server");
