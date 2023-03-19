@@ -5,7 +5,7 @@
     "rootDir": "src",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "target": "es6",
     "incremental": false,
     "module": "commonjs",
