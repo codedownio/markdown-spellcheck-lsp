@@ -1,18 +1,20 @@
 { stdenv
+, lib
 , callPackage
-, gitignoreSource
 , nodejs
 }:
 
 let
-  nodeDependencies = (callPackage ./. {}).nodeDependencies;
+  nodeDependencies = (callPackage ./. {}).nodeDependencies.override {
+    production = false;
+  };
 
 in
 
 stdenv.mkDerivation {
   name = "markdown-spellcheck-lsp-bundle";
 
-  src = gitignoreSource ./.;
+  src = lib.cleanSource ./.;
 
   inherit nodeDependencies;
 
