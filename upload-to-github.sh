@@ -1,10 +1,12 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-VERSION=$(cat package.json | jq .version)
+set -eo pipefail
+
+VERSION=$(cat package.json | jq -r .version)
 
 TAG=v"$VERSION"
 
-bundle=$(nix build .#bundle --no-link --json | jq -r '.[0].outputs.out')
+bundle=$(nix build .#bundleTarball --no-link --json | jq -r '.[0].outputs.out')/markdown-spellcheck-lsp.tar.gz
 
 echo "Got bundle: $bundle"
 

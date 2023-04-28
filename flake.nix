@@ -9,6 +9,14 @@
         default = pkgs.callPackage ./. {};
 
         nodeDependencies = default.nodeDependencies.override {
+          src = pkgs.lib.cleanSourceWith {
+            filter = name: type: let baseName = baseNameOf (toString name); in
+                                 baseName == "package.json"
+                                 || baseName == "package-lock.json"
+            ;
+            src = ./.;
+          };
+
           production = false;
         };
 
@@ -61,7 +69,21 @@
               stdenv.mkDerivation {
                 name = "markdown-spellcheck-lsp-bundle";
 
-                src = lib.cleanSource ./.;
+                src = pkgs.lib.cleanSourceWith {
+                  filter = name: type: let
+                    baseName = baseNameOf (toString name);
+                    dirName = dirOf (toString name);
+                  in
+                    lib.hasInfix "/src/" name
+                    || baseName == "src"
+                    || baseName == "package.json"
+                    || baseName == "package-lock.json"
+                    || baseName == "tsconfig.json"
+                    || baseName == "babel.config.js"
+                    || baseName == "webpack.config.js"
+                  ;
+                  src = ./.;
+                };
 
                 inherit nodeDependencies;
 
@@ -78,6 +100,16 @@
 
                 installPhase = "true";
               };
+
+            bundleTarball = with { inherit (pkgs) runCommand; };
+              runCommand "markdown-spellcheck-lsp-tarball" {} ''
+                mkdir -p "$out"
+
+                mkdir markdown-spellcheck-lsp
+                cp -r "${bundle}"/* markdown-spellcheck-lsp
+
+                tar -czvf "$out/markdown-spellcheck-lsp.tar.gz" markdown-spellcheck-lsp
+              '';
           };
         }
     );
