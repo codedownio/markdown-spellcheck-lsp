@@ -69,22 +69,19 @@
 
                 buildPhase = ''
                   cp -r $nodeDependencies/lib/node_modules .
-                  chmod -R u+w ./node_modules
-                  cp -r ${nodehun}/lib/node_modules/nodehun ./node_modules
+                  chmod u+w ./node_modules
                   export PATH="node_modules/.bin:$PATH"
-
-                  echo "++++++++++++++++++++++++++++++++++"
-                  ls -lh ./node_modules
-                  echo "++++++++++++++++++++++++++++++++++"
-                  ls -lh ./node_modules/nodehun
-                  echo "++++++++++++++++++++++++++++++++++"
-                  ls -lh ./node_modules/nodehun/build
-                  echo "++++++++++++++++++++++++++++++++++"
-                  ls -lh ./node_modules/nodehun/build/Release
-                  echo "++++++++++++++++++++++++++++++++++"
 
                   npm run build
                   mv dist $out
+
+                  # Handle nodehun specially as an external
+                  cd $out
+                  mkdir -p ./node_modules/nodehun
+                  cd ./node_modules/nodehun
+                  cp -r ${nodehun}/lib/node_modules/nodehun/package.json .
+                  cp -r ${nodehun}/lib/node_modules/nodehun/build .
+                  cp -r ${nodehun}/lib/node_modules/nodehun/node_modules .
                 '';
 
                 installPhase = "true";

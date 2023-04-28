@@ -18,15 +18,12 @@ module.exports = {
           loader: "babel-loader"
         }
       },
-      {
-        test: /\.node$/,
-        use: {
-          loader: "node-loader",
-        }
-      },
     ],
   },
   target: "node",
+  externals: [
+    "nodehun"
+  ],
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
