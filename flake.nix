@@ -57,7 +57,7 @@
               buildInputs = with pkgs; [python3 nodePackages.node-gyp stdenv];
             };
 
-            default = with { inherit (pkgs) lib stdenv; };
+            bundle = with { inherit (pkgs) lib stdenv; };
               stdenv.mkDerivation {
                 name = "markdown-spellcheck-lsp-bundle";
 
@@ -74,14 +74,6 @@
 
                   npm run build
                   mv dist $out
-
-                  # Handle nodehun specially as an external
-                  cd $out
-                  mkdir -p ./node_modules/nodehun
-                  cd ./node_modules/nodehun
-                  cp -r ${nodehun}/lib/node_modules/nodehun/package.json .
-                  cp -r ${nodehun}/lib/node_modules/nodehun/build .
-                  cp -r ${nodehun}/lib/node_modules/nodehun/node_modules .
                 '';
 
                 installPhase = "true";
