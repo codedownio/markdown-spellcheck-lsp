@@ -2128,6 +2128,15 @@ let
         sha512 = "AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==";
       };
     };
+    "big.js-5.2.2" = {
+      name = "big.js";
+      packageName = "big.js";
+      version = "5.2.2";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz";
+        sha512 = "vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==";
+      };
+    };
     "binary-extensions-2.2.0" = {
       name = "binary-extensions";
       packageName = "binary-extensions";
@@ -2855,6 +2864,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz";
         sha512 = "MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==";
+      };
+    };
+    "emojis-list-3.0.0" = {
+      name = "emojis-list";
+      packageName = "emojis-list";
+      version = "3.0.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/emojis-list/-/emojis-list-3.0.0.tgz";
+        sha512 = "/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==";
       };
     };
     "end-of-stream-1.4.4" = {
@@ -4297,6 +4315,15 @@ let
         sha512 = "3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==";
       };
     };
+    "loader-utils-2.0.4" = {
+      name = "loader-utils";
+      packageName = "loader-utils";
+      version = "2.0.4";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/loader-utils/-/loader-utils-2.0.4.tgz";
+        sha512 = "xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==";
+      };
+    };
     "locate-path-5.0.0" = {
       name = "locate-path";
       packageName = "locate-path";
@@ -4673,6 +4700,15 @@ let
       src = fetchurl {
         url = "https://registry.npmjs.org/node-int64/-/node-int64-0.4.0.tgz";
         sha512 = "O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==";
+      };
+    };
+    "node-loader-2.0.0" = {
+      name = "node-loader";
+      packageName = "node-loader";
+      version = "2.0.0";
+      src = fetchurl {
+        url = "https://registry.npmjs.org/node-loader/-/node-loader-2.0.0.tgz";
+        sha512 = "I5VN34NO4/5UYJaUBtkrODPWxbobrE4hgDqPrjB25yPkonFhCmZ146vTH+Zg417E9Iwoh1l/MbRs1apc5J295Q==";
       };
     };
     "node-releases-2.0.10" = {
@@ -7028,6 +7064,7 @@ let
       sources."babel-preset-jest-29.5.0"
       sources."balanced-match-1.0.0"
       sources."base64-js-1.5.1"
+      sources."big.js-5.2.2"
       sources."binary-extensions-2.2.0"
       sources."bl-4.1.0"
       (sources."boxen-5.1.2" // {
@@ -7151,6 +7188,7 @@ let
       sources."electron-to-chromium-1.4.332"
       sources."emittery-0.13.1"
       sources."emoji-regex-8.0.0"
+      sources."emojis-list-3.0.0"
       sources."end-of-stream-1.4.4"
       sources."enhanced-resolve-5.12.0"
       sources."envinfo-7.8.1"
@@ -7490,6 +7528,7 @@ let
         ];
       })
       sources."loader-runner-4.3.0"
+      sources."loader-utils-2.0.4"
       sources."locate-path-6.0.0"
       sources."lodash-4.17.21"
       sources."lodash.debounce-4.0.8"
@@ -7551,6 +7590,7 @@ let
       sources."node-addon-api-6.0.0"
       sources."node-emoji-1.10.0"
       sources."node-int64-0.4.0"
+      sources."node-loader-2.0.0"
       sources."node-releases-2.0.10"
       sources."nodehun-3.0.2"
       sources."normalize-package-data-2.5.0"
