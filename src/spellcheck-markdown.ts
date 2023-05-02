@@ -1,9 +1,6 @@
 
-// import { Nodehun } from "nodehun";
-
-type Diagnostic = import("vscode-languageserver").Diagnostic;
-
 type Nodehun = import("nodehun").Nodehun;
+type Diagnostic = import("vscode-languageserver").Diagnostic;
 
 const Remarkable = require("remarkable");
 
