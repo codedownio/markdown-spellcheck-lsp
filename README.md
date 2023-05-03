@@ -20,5 +20,3 @@ In the Markdown below, `markdown-spellcheck-lsp` will correctly find all the mis
 
 This link **iz** also [wronggly speled](www.github.com)
 ```
-
-## CLI usage
