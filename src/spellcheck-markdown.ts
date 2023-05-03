@@ -16,7 +16,7 @@ interface Word {
   end: number;
 }
 
-export async function spellcheckMarkdown(nodehun: Nodehun, markdown: string) {
+export async function spellcheckMarkdown(nodehun: Nodehun, markdown: string): Promise<Diagnostic[]> {
   // Parse markdown to tokens
   let md = new Remarkable("commonmark");
   md.inline.ruler.enable(["footnote_inline", "del", "math"]);
