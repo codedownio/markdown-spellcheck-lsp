@@ -9,7 +9,7 @@
   ],
   "main": "./dist/cli.js",
   "bin": {
-    "markdown-spellcheck-lsp": "./dist/cli.js"
+    "markdown-spellcheck-lsp": "./dist/index.js"
   },
   "dependencies": {
     "child_process": "^1.0.2",

@@ -17,6 +17,11 @@ program
     .requiredOption("--affix-file <path>", "Path to hunspell affix file (like en_US.aff)")
     .requiredOption("--dic-file <path>", "Path to hunspell dictionary file (like en_US.dic)")
 
+    // CLI mode options
+    .option("-f <file>", "test a file using CLI mode")
+    .option("--json", "output CLI mode diagnostics in JSON")
+
+    // LSP mode options
     .option("--stdio", "use stdio")
     .option("--node-ipc", "use node-ipc")
     .option("--log-level <logLevel>", "A number indicating the log level (4 = log, 3 = info, 2 = warn, 1 = error). Defaults to `2`.")
@@ -25,6 +30,17 @@ program
 program.parse();
 
 const options = program.opts();
+
+if (options.file) {
+    // Run in CLI mode and output diagnostics
+    checkFile(options.file, options.affixFile, options.dicFile, !!options.json)
+        .then((exitCode) => process.exit(exitCode));
+        .catch((err) => {
+            console.error("Error spellchecking Markdown");
+            console.error(err);
+            process.exit(1);
+        });
+}
 
 if (!(options.stdio || options.socket || options.nodeIpc)) {
     console.error("Connection type required (stdio, node-ipc, socket). Refer to --help for more details.");
