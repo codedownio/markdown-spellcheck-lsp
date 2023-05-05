@@ -96,14 +96,20 @@ test('Works for a link on a new line', async () => {
   await spell(`\nHere is a [linkz](www.google.com)`, [[1, 11, 16]]);
 });
 
-test(`Doesn't flag contractions`, async () => {
+test(`Allows contractions`, async () => {
   await spell(`I've done a thing`, []);
-});
-
-test(`Doesn't flag contractions 2`, async () => {
   await spell(`I’ve done a thing`, []);
 });
 
+test(`Allows hyphens`, async () => {
+  await spell(`The president is the commander-in-chief`, []);
+});
+
+test(`Tokenizes on punctuation`, async () => {
+  await spell(`Oh good, it doesn't get confused by this`, []);
+  await spell(`Oh good; it doesn't get confused by this`, []);
+  await spell(`Oh good: it doesn't get confused by this`, []);
+});
 
 
 import {Nodehun} from "nodehun";

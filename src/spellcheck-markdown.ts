@@ -4,7 +4,7 @@ type Diagnostic = import("vscode-languageserver").Diagnostic;
 
 const Remarkable = require("remarkable");
 
-const wordRegex = /(\S+)/gm;
+const wordRegex = /([\w-'’]+)/gm;
 
 
 export const initialText = "Misspelling. Suggestions: ";
