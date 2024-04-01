@@ -17,6 +17,8 @@ program
     .requiredOption("--affix-file <path>", "Path to hunspell affix file (like en_US.aff)")
     .requiredOption("--dic-file <path>", "Path to hunspell dictionary file (like en_US.dic)")
 
+    .option("--personal-dic-file <path>", "Path to hunspell personal dictionary file")
+
     .option("--stdio", "use stdio")
     .option("--node-ipc", "use node-ipc")
     .option("--log-level <logLevel>", "A number indicating the log level (4 = log, 3 = info, 2 = warn, 1 = error). Defaults to `2`.")
@@ -48,4 +50,5 @@ createLspConnection({
     showMessageLevel: options.logLevel,
     affixFile: options.affixFile,
     dicFile: options.dicFile,
+    personalDicFile: options.personalDicFile,
 }).listen();

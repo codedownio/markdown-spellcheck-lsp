@@ -15,6 +15,7 @@ export interface IServerOptions {
     showMessageLevel: lsp.MessageType;
     affixFile: string;
     dicFile: string;
+    personalDicFile: string | null | undefined;
 }
 
 export function createLspConnection(options: IServerOptions): lsp.IConnection {
@@ -26,6 +27,7 @@ export function createLspConnection(options: IServerOptions): lsp.IConnection {
         lspClient,
         affixFile: options.affixFile,
         dicFile: options.dicFile,
+        personalDicFile: options.personalDicFile,
     });
 
     connection.onInitialize(server.initialize.bind(server));
