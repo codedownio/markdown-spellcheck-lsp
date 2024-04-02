@@ -105,6 +105,10 @@ test(`Allows hyphens`, async () => {
   await spell(`The president is the commander-in-chief`, []);
 });
 
+test(`Separates dashes`, async () => {
+  await spell(`This is wrongz--but not this`, [[0, 8, 14]]);
+});
+
 test(`Tokenizes on punctuation`, async () => {
   await spell(`Oh good, it doesn't get confused by this`, []);
   await spell(`Oh good; it doesn't get confused by this`, []);
