@@ -29,7 +29,7 @@
     "build_tsc": "rm -rf dist && tsc",
     "check": "ts-node ./src/test-spellchecker.ts",
     "clean": "rm -rf dist",
-    "dev": "npx tsc -w",
+    "dev": "npx tsc -w --noEmit",
     "lint": "tslint -c ../tslint.json --project .",
     "prepare": "echo 'skip'",
     "start": "node dist/index.js",
