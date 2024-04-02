@@ -12,6 +12,7 @@
     "markdown-spellcheck-lsp": "./dist/cli.js"
   },
   "dependencies": {
+    "@codedown/remarkable": "^1.7.0",
     "child_process": "^1.0.2",
     "commander": "^10.0.1",
     "nodehun": "^3.0.2",
@@ -19,16 +20,15 @@
     "p-debounce": "^1.0.0",
     "path": "^0.12.7",
     "process": "^0.11.10",
-    "remarkable": "git+https://github.com/codedownio/remarkable.git#7b9a7007c2de67b30ecc57b9c7545434419d7787",
     "url": "^0.11.0",
     "vscode-languageserver": "^5.3.0-next",
     "vscode-uri": "^1.0.5"
   },
   "scripts": {
-    "build": "rimraf dist && webpack --config webpack.config.js",
-    "build_tsc": "rimraf dist && tsc",
+    "build": "rm -rf dist && webpack --config webpack.config.js",
+    "build_tsc": "rm -rf dist && tsc",
     "check": "ts-node ./src/test-spellchecker.ts",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "dev": "npx tsc -w",
     "lint": "tslint -c ../tslint.json --project .",
     "prepare": "echo 'skip'",
@@ -49,7 +49,6 @@
     "concurrently": "^3.6.1",
     "jest": "^29.5.0",
     "npm-check": "^6.0.1",
-    "rimraf": "^5.0.0",
     "source-map-support": "^0.4.18",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",

@@ -113,7 +113,7 @@ test(`Tokenizes on punctuation`, async () => {
 
 
 import {Nodehun} from "nodehun";
-const fs = require("fs");
+import * as fs from "fs";
 
 // TODO: be able to pass these in when running tests
 const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
