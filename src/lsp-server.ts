@@ -9,6 +9,7 @@ import debounce = require("p-debounce");
 import {Nodehun} from "nodehun";
 
 import * as fs from "fs";
+import * as path from "path";
 
 import { Logger, PrefixingLogger } from "./logger";
 
@@ -42,7 +43,7 @@ export class LspServer {
     const dictionary = fs.readFileSync(options.dicFile);
     this.nodehun = new Nodehun(affix, dictionary);
 
-    if (options.personalDicFile) {
+    if (options.personalDicFile && fs.existsSync(options.personalDicFile)) {
       const personalDictionary = fs.readFileSync(options.personalDicFile);
       this.nodehun.addDictionarySync(personalDictionary);
     }
@@ -216,8 +217,13 @@ export class LspServer {
           throw new Error("markdown-spellcheck-lsp was not configured with a personal dictionary file");
         }
 
-        fs.appendFileSync(this.options.personalDicFile, "\n" + wordToAdd);
-        this.nodehun.add(wordToAdd);
+        if (!fs.existsSync(this.options.personalDicFile)) {
+          await fs.promises.mkdir(path.dirname(this.options.personalDicFile), { recursive: true });
+          await fs.promises.writeFile(this.options.personalDicFile, wordToAdd + "\n", null);
+        } else {
+          await fs.promises.appendFile(this.options.personalDicFile, wordToAdd + "\n");
+          this.nodehun.add(wordToAdd);
+        }
 
         this.requestDiagnostics();
       } catch (e) {
