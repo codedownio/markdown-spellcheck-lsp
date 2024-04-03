@@ -12,7 +12,7 @@
     "markdown-spellcheck-lsp": "./dist/cli.js"
   },
   "dependencies": {
-    "@codedown/remarkable": "git+https://github.com/codedownio/remarkable.git#866730792362183a2ed8446412392247f58adc69",
+    "@codedown/remarkable": "1.7.1-spellcheck",
     "child_process": "^1.0.2",
     "commander": "^10.0.1",
     "nodehun": "^3.0.2",

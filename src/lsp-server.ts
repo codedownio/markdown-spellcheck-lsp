@@ -14,6 +14,7 @@ import * as path from "path";
 import { Logger, PrefixingLogger } from "./logger";
 
 import { LspClient } from "./lsp-client";
+import { processFileLineByLine } from "./process-personal-dictionary";
 import { uriToPath } from "./protocol-translation";
 import { LspDocuments } from "./document";
 import { initialText, spellcheckMarkdown } from "./spellcheck-markdown";
@@ -42,11 +43,6 @@ export class LspServer {
     const affix = fs.readFileSync(options.affixFile);
     const dictionary = fs.readFileSync(options.dicFile);
     this.nodehun = new Nodehun(affix, dictionary);
-
-    if (options.personalDicFile && fs.existsSync(options.personalDicFile)) {
-      const personalDictionary = fs.readFileSync(options.personalDicFile);
-      this.nodehun.addDictionarySync(personalDictionary);
-    }
   }
 
   closeAll(): void {
@@ -55,7 +51,17 @@ export class LspServer {
     }
   }
 
-  async initialize(params: InitializeParams): Promise<InitializeResult> {
+  async initialize(_params: InitializeParams): Promise<InitializeResult> {
+    if (this.options.personalDicFile && fs.existsSync(this.options.personalDicFile)) {
+      // The personal dictionary is not actually in .dic file format, since that would require
+      // us to structure it a certain way (with a count at the top of the file etc.).
+      // Instead, it's just a list of words, one per line.
+      // This is also how Firefox uses hunspell.
+      processFileLineByLine(this.options.personalDicFile, (word) => {
+        this.nodehun.add(word);
+      });
+    }
+
     this.initializeResult = {
       capabilities: {
         textDocumentSync: TextDocumentSyncKind.Incremental,
