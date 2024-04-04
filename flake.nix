@@ -26,45 +26,45 @@
       in
         {
           packages = rec {
-            nodehunWithNix = with { inherit (pkgs) lib fetchFromGitHub node2nix stdenv; };
-              stdenv.mkDerivation {
-                name = "nodehun-with-nix";
-                src = fetchFromGitHub {
-                  owner = "Wulf";
-                  repo = "nodehun";
-                  rev = "03c9dcf1fcd965031a68553ccaf6487d1fe87f79";
-                  sha256 = "13baqdxq8m1rvcqpdx5kwwk32xppwv9k29d2w55ash48akk3v1ij";
-                };
+            # nodehunWithNix = with { inherit (pkgs) lib fetchFromGitHub node2nix stdenv; };
+            #   stdenv.mkDerivation {
+            #     name = "nodehun-with-nix";
+            #     src = fetchFromGitHub {
+            #       owner = "Wulf";
+            #       repo = "nodehun";
+            #       rev = "03c9dcf1fcd965031a68553ccaf6487d1fe87f79";
+            #       sha256 = "13baqdxq8m1rvcqpdx5kwwk32xppwv9k29d2w55ash48akk3v1ij";
+            #     };
 
-                dontConfigure = true;
-                dontFixup = true;
+            #     dontConfigure = true;
+            #     dontFixup = true;
 
-                doCheck = false;
+            #     doCheck = false;
 
-                buildInputs = [node2nix];
+            #     buildInputs = [node2nix];
 
-                buildPhase = ''
-                  node2nix -18 -l package-lock.json
-                '';
+            #     buildPhase = ''
+            #       node2nix -18 -l package-lock.json
+            #     '';
 
-                installPhase = ''
-                  cp -r ./. $out
-                '';
-              };
+            #     installPhase = ''
+            #       cp -r ./. $out
+            #     '';
+            #   };
 
-            nodeHeaders = pkgs.runCommand "node-${nodejs.version}-headers.tar.gz" { buildInputs = [pkgs.gnutar]; } ''
-              dir="node-v${nodejs.version}"
-              mkdir "$dir"
-              cp -r ${nodejs}/include "$dir"
-              tar -czvf $out "$dir"
-            '';
+            # nodeHeaders = pkgs.runCommand "node-${nodejs.version}-headers.tar.gz" { buildInputs = [pkgs.gnutar]; } ''
+            #   dir="node-v${nodejs.version}"
+            #   mkdir "$dir"
+            #   cp -r ${nodejs}/include "$dir"
+            #   tar -czvf $out "$dir"
+            # '';
 
-            nodehun = (pkgs.callPackage nodehunWithNix { inherit nodejs; }).package.override {
-              preRebuild = ''
-                npm run build -- --tarball ${nodeHeaders}
-              '';
-              buildInputs = with pkgs; [python3 nodePackages.node-gyp stdenv];
-            };
+            # nodehun = (pkgs.callPackage nodehunWithNix { inherit nodejs; }).package.override {
+            #   preRebuild = ''
+            #     npm run build -- --tarball ${nodeHeaders}
+            #   '';
+            #   buildInputs = with pkgs; [python3 nodePackages.node-gyp stdenv];
+            # };
 
             inherit nodeDependencies;
 
