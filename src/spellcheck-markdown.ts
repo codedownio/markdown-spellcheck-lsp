@@ -2,7 +2,7 @@
 type Nodehun = import("nodehun").Nodehun;
 type Diagnostic = import("vscode-languageserver").Diagnostic;
 
-import * as Remarkable from "@codedown/remarkable";
+const Remarkable = require("@codedown/remarkable");
 
 const wordRegex = /([\w-'’]+)/gm;
 
