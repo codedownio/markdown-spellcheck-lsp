@@ -57,8 +57,10 @@ export class LspServer {
       // us to structure it a certain way (with a count at the top of the file etc.).
       // Instead, it's just a list of words, one per line.
       // This is also how Firefox uses hunspell.
-      processFileLineByLine(this.options.personalDicFile, (word) => {
-        this.nodehun.add(word);
+      await processFileLineByLine(this.options.personalDicFile, (word) => {
+        if (word) {
+          this.nodehun.add(word);
+        }
       });
     }
 
