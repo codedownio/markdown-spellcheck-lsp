@@ -1,6 +1,6 @@
 {
   "name": "markdown-spellcheck-lsp",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Markdown spellchecker over Language Server Protocol (LSP)",
   "author": "TypeFox, CodeDown, and others",
   "license": "Apache-2.0",
