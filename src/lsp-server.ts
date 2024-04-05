@@ -230,8 +230,9 @@ export class LspServer {
           await fs.promises.writeFile(this.options.personalDicFile, wordToAdd + "\n", null);
         } else {
           await fs.promises.appendFile(this.options.personalDicFile, wordToAdd + "\n");
-          this.nodehun.add(wordToAdd);
         }
+
+        this.nodehun.add(wordToAdd);
 
         this.requestDiagnostics();
       } catch (e) {
