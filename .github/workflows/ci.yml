@@ -16,6 +16,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: HatsuneMiku3939/direnv-action@v1
-    - run: npm ci
-    - run: npm test
+
+    - name: Install direnv
+      run: |
+        curl -sfL https://direnv.net/install.sh | bash
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - run: |
+        direnv allow
+        npm ci
+
+    - run: |
+        direnv allow
+        npm test
