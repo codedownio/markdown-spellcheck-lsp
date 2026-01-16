@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-25.11";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils }:
@@ -17,7 +17,7 @@
           cp *.json $out
         '';
 
-        nodejs = pkgs.nodejs-18_x;
+        nodejs = pkgs.nodejs_20;
 
         nodeDependencies = (pkgs.callPackage "${nixFiles}" { inherit nodejs; }).nodeDependencies.override {
           production = false;
@@ -25,6 +25,14 @@
 
       in
         {
+          devShells = {
+            default = pkgs.mkShell {
+              buildInputs = with pkgs; [
+                nodejs
+              ];
+            };
+          };
+
           packages = rec {
             # nodehunWithNix = with { inherit (pkgs) lib fetchFromGitHub node2nix stdenv; };
             #   stdenv.mkDerivation {
