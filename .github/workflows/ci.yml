@@ -16,6 +16,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: direnv/direnv-action@v1
+    - uses: HatsuneMiku3939/direnv-action@v1
     - run: npm ci
     - run: npm test
