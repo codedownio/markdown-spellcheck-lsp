@@ -28,4 +28,9 @@ jobs:
 
     - run: |
         direnv allow
+
+        echo "------------------------"
+        env
+        echo "------------------------"
+
         npm test
