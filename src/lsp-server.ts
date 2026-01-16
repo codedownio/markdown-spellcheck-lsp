@@ -34,6 +34,7 @@ export class LspServer {
   private initializeResult: InitializeResult;
   private logger: Logger;
   private nodehun: Nodehun;
+  private shutdownReceived = false;
 
   private readonly documents = new LspDocuments();
 
@@ -49,6 +50,15 @@ export class LspServer {
     for (const file of [...this.documents.files]) {
       this.closeDocument(file);
     }
+  }
+
+  shutdown(): void {
+    this.shutdownReceived = true;
+    this.closeAll();
+  }
+
+  didShutdown(): boolean {
+    return this.shutdownReceived;
   }
 
   async initialize(_params: InitializeParams): Promise<InitializeResult> {

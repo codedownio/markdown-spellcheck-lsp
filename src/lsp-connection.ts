@@ -31,6 +31,10 @@ export function createLspConnection(options: IServerOptions): lsp.IConnection {
     });
 
     connection.onInitialize(server.initialize.bind(server));
+    connection.onShutdown(server.shutdown.bind(server));
+    connection.onExit(() => {
+        process.exit(server.didShutdown() ? 0 : 1);
+    });
 
     connection.onDidOpenTextDocument(server.didOpenTextDocument.bind(server));
     connection.onDidSaveTextDocument(server.didSaveTextDocument.bind(server));
