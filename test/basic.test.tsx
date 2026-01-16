@@ -115,9 +115,8 @@ test(`Tokenizes on punctuation`, async () => {
 import {Nodehun} from "nodehun";
 import * as fs from "fs";
 
-// TODO: be able to pass these in when running tests
-const affix = fs.readFileSync("/usr/share/hunspell/en_US.aff");
-const dictionary = fs.readFileSync("/usr/share/hunspell/en_US.dic");
+const affix = fs.readFileSync(process.env.HUNSPELL_AFF);
+const dictionary = fs.readFileSync(process.env.HUNSPELL_DIC);
 
 const nodehun = new Nodehun(affix, dictionary);
 

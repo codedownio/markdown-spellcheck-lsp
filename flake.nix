@@ -27,7 +27,9 @@
         {
           devShells = {
             default = pkgs.mkShell {
-              buildInputs = with pkgs; [
+              HUNSPELL_AFF = "${pkgs.hunspellDicts.en_US}/share/hunspell/en_US.aff";
+              HUNSPELL_DIC = "${pkgs.hunspellDicts.en_US}/share/hunspell/en_US.dic";
+              buildInputs = [
                 nodejs
               ];
             };
