@@ -29,13 +29,14 @@ jobs:
     - name: Allow direnv
       run: direnv allow
 
-    - name: Load direnv environment
-      run: eval "$(direnv export bash)"
+    - name: NPM install
+      run: |
+        eval "$(direnv export bash)"
+        npm ci
 
-    - run: npm ci
-
-    - run: |
-        direnv allow
+    - name: NPM test
+      run: |
+        eval "$(direnv export bash)"
 
         echo "------------------------"
         which npm
