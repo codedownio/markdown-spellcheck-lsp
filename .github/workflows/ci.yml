@@ -37,14 +37,4 @@ jobs:
     - name: NPM test
       run: |
         eval "$(direnv export bash)"
-
-        echo "------------------------"
-        which npm
-        echo "------------------------"
-        env
-        echo "------------------------"
-        nix build .#hunspellDicts
-        ls -lh
-        echo "------------------------"
-
         npm test
