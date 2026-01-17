@@ -26,9 +26,13 @@ jobs:
         curl -sfL https://direnv.net/install.sh | bash
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - run: |
-        direnv allow
-        npm ci
+    - name: Allow direnv
+      run: direnv allow
+
+    - name: Load direnv environment
+      run: eval "$(direnv export bash)"
+
+    - run: npm ci
 
     - run: |
         direnv allow
