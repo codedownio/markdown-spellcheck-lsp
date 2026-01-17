@@ -76,6 +76,8 @@
             #   buildInputs = with pkgs; [python3 nodePackages.node-gyp stdenv];
             # };
 
+            hunspellDicts = pkgs.hunspellDicts.en_US;
+
             inherit nodeDependencies;
 
             bundle = with { inherit (pkgs) lib stdenv; };
