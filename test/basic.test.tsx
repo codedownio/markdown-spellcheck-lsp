@@ -96,6 +96,16 @@ test('Works for a link on a new line', async () => {
   await spell(`\nHere is a [linkz](www.google.com)`, [[1, 11, 16]]);
 });
 
+test('Locates a misspelling after a bold followed by a colon', async () => {
+  // Regression: ':' immediately after emphasis close used to shift the text
+  // token's offsets by one, so "ECE" was flagged starting on the "C".
+  await spell(`**Course**: ECE 370 and Systemsz`, [[0, 12, 15], [0, 24, 32]]);
+});
+
+test('Does not flag a standalone hyphen', async () => {
+  await spell(`370 - Signalsz`, [[0, 6, 14]]);
+});
+
 test(`Allows contractions`, async () => {
   await spell(`I've done a thing`, []);
   await spell(`I’ve done a thing`, []);

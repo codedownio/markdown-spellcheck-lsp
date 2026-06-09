@@ -36,6 +36,11 @@ export async function spellcheckMarkdown(nodehun: Nodehun, markdown: string): Pr
       let match: RegExpExecArray | null;
 
       while ((match = wordRegex.exec(content)) !== null) {
+        // Skip "words" with no letters (a lone "-", stray apostrophes, pure
+        // numbers). The word regex allows "-" and "'" so hyphenated words and
+        // contractions survive, but a standalone separator isn't a misspelling.
+        if (!/[A-Za-z]/.test(match[0])) continue;
+
         words.push({
           text: match[0],
           line: token.line,
