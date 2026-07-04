@@ -115,6 +115,11 @@ test(`Allows hyphens`, async () => {
   await spell(`The president is the commander-in-chief`, []);
 });
 
+test('Keeps accented words whole (does not split on the accent)', async () => {
+  // With an ASCII-only word regex this would flag "rdz" (or "w"); the whole "wördz" should be one span.
+  await spell(`A wördz here`, [[0, 2, 7]]);
+});
+
 test(`Tokenizes on punctuation`, async () => {
   await spell(`Oh good, it doesn't get confused by this`, []);
   await spell(`Oh good; it doesn't get confused by this`, []);

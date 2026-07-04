@@ -4,7 +4,9 @@ type Diagnostic = import("vscode-languageserver").Diagnostic;
 
 const Remarkable = require("@codedown/remarkable");
 
-const wordRegex = /([\w-'’]+)/gm;
+// \p{L} (any Unicode letter) keeps accented words whole (e.g. "café") instead of splitting on the accent;
+// the rest mirrors \w plus hyphen/apostrophes so contractions and hyphenated words survive.
+const wordRegex = /([\p{L}0-9_'’-]+)/gmu;
 
 
 export const initialText = "Misspelling. Suggestions: ";
@@ -39,7 +41,7 @@ export async function spellcheckMarkdown(nodehun: Nodehun, markdown: string): Pr
         // Skip "words" with no letters (a lone "-", stray apostrophes, pure
         // numbers). The word regex allows "-" and "'" so hyphenated words and
         // contractions survive, but a standalone separator isn't a misspelling.
-        if (!/[A-Za-z]/.test(match[0])) continue;
+        if (!/\p{L}/u.test(match[0])) continue;
 
         words.push({
           text: match[0],
