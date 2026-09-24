@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 0.6.5
+
+* Bump @codedown/remarkable to 1.8.3, fixing misplaced diagnostics in nested list items
+
 # 0.6.4
 
 * Match Unicode letters so accented words aren't split
