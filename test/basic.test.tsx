@@ -54,6 +54,20 @@ test('Works for a multi-line ordered list', async () => {
   ]);
 });
 
+test('Works for a nested unordered list', async () => {
+  // Regression: the indent of the nested item was counted twice when locating the word, which
+  // pushed the diagnostic onto the following line at character 0.
+  await spell(`* Here's a heading
+    * asdfz
+## And here's a heading`, [[1, 6, 11]]);
+});
+
+test('Works for a multi-line paragraph in a nested unordered list', async () => {
+  await spell(`* Here's a heading
+    * asdfz
+      morez`, [[1, 6, 11], [2, 6, 11]]);
+});
+
 test('Works for a block quote', async () => {
   await spell(`> A singlez line block quote`, [[0, 4, 11]]);
 });
