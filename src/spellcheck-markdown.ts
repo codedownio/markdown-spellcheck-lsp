@@ -8,6 +8,10 @@ const Remarkable = require("@codedown/remarkable");
 // the rest mirrors \w plus hyphen/apostrophes so contractions and hyphenated words survive.
 const wordRegex = /([\p{L}0-9_'’-]+)/gmu;
 
+// A display math block: "$$" opening a line, through a "$$" ending one. A single "$" is left
+// alone, since a dollar sign in a sentence is far more common than inline math.
+const blockMathRegex = /^\$\$[\s\S]*?\$\$$/gm;
+
 
 export const initialText = "Misspelling. Suggestions: ";
 
@@ -25,7 +29,7 @@ export async function spellcheckMarkdown(nodehun: Nodehun, markdown: string): Pr
   md.inline.validateLink = () => true;
   md.options.noTrimInline = true;
   let env = {};
-  let tokens = md.parse(markdown, env);
+  let tokens = md.parse(blankBlockMath(markdown), env);
 
   // console.log("Got tokens", JSON.stringify(tokens));
 
@@ -82,6 +86,12 @@ export async function spellcheckMarkdown(nodehun: Nodehun, markdown: string): Pr
   }
 
   return diagnostics;
+}
+
+// The LaTeX in a display math block isn't prose. Blanking it keeps the document's shape, so every
+// word outside it is still reported at the line and column the client sent.
+function blankBlockMath(markdown: string): string {
+  return markdown.replace(blockMathRegex, (block) => block.replace(/[^\n]/g, " "));
 }
 
 function walkTokenTree(token, fn) {

@@ -134,6 +134,42 @@ test('Keeps accented words whole (does not split on the accent)', async () => {
   await spell(`A wördz here`, [[0, 2, 7]]);
 });
 
+test('Ignores a display math block', async () => {
+  await spell(`Some prose here.
+
+$$
+\\alpha_{ij} + \\beta^{kl} = \\gamma
+$$
+
+More prosez after.`, [[6, 5, 11]]);
+});
+
+test('Ignores a display math block with no blank line around it', async () => {
+  await spell(`Some prosez here.
+$$
+\\alpha_{ij}
+$$
+More prosey after.`, [
+    [0, 5, 11],
+    [4, 5, 11]
+  ]);
+});
+
+test('Ignores a display math block written on one line', async () => {
+  await spell(`Herez we go
+
+$$\\alpha_{ij}$$
+
+andz more`, [
+    [0, 0, 5],
+    [4, 0, 4]
+  ]);
+});
+
+test('Checks around dollar signs in prose', async () => {
+  await spell(`It costs $5 and $10, whichz is a lot`, [[0, 21, 27]]);
+});
+
 test(`Tokenizes on punctuation`, async () => {
   await spell(`Oh good, it doesn't get confused by this`, []);
   await spell(`Oh good; it doesn't get confused by this`, []);
