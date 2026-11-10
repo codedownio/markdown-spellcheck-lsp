@@ -166,6 +166,17 @@ andz more`, [
   ]);
 });
 
+test('Ignores a one-line display math block with spaces inside the delimiters', async () => {
+  await spell(`Herez we go
+
+$$ f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}} \\, e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}} $$
+
+andz more`, [
+    [0, 0, 5],
+    [4, 0, 4]
+  ]);
+});
+
 test('Checks around dollar signs in prose', async () => {
   await spell(`It costs $5 and $10, whichz is a lot`, [[0, 21, 27]]);
 });
