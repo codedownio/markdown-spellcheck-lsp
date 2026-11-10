@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 0.6.6
+
+* Don't spellcheck the LaTeX inside a `$$` display math block
+
 # 0.6.5
 
 * Bump @codedown/remarkable to 1.8.3, fixing misplaced diagnostics in nested list items
