@@ -177,6 +177,31 @@ andz more`, [
   ]);
 });
 
+test('Ignores inline math', async () => {
+  await spell(`Herez is \\(\\frac{a}{b} + \\sqrt{x}\\) inlinez`, [
+    [0, 0, 5],
+    [0, 36, 43]
+  ]);
+});
+
+test('Ignores inline math in a list item and a heading', async () => {
+  await spell(`* itemz \\(\\frac{1}{2}\\) z
+
+# Headz \\(\\sqrt{x}\\)`, [
+    [0, 2, 7],
+    [2, 2, 7]
+  ]);
+});
+
+test('Positions words after inline math that spans lines', async () => {
+  await spell(`a \\(\\alpha
+\\beta\\) wordz
+morez`, [
+    [1, 8, 13],
+    [2, 0, 5]
+  ]);
+});
+
 test('Checks around dollar signs in prose', async () => {
   await spell(`It costs $5 and $10, whichz is a lot`, [[0, 21, 27]]);
 });
